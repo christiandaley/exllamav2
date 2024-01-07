@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <iostream>
+#include <random>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
@@ -949,7 +950,41 @@ std::vector<float> sample_basic
 
     if (qtemp)
     {
-        std::cout << "qtemp!!!\n";
+        const float min_temp = 0.5f;
+        const float max_temp = 1.5f;
+        const float pi = 3.1415926f;
+
+        const float std_dev = pi / 4.0f;
+
+        static float curr_pos = pi;
+
+        static float min_f = 2.0f;
+        static float max_f = 0.0f;
+
+        std::random_device rd{};
+        std::mt19937 gen{rd()};
+    
+        std::normal_distribution d{0.0f, std_dev};
+
+        const float delta = d(gen) - (2.0f * sin(curr_pos) * cos(curr_pos) + 0.5f) * std_dev / 10.0f;
+
+        curr_pos += delta;
+        curr_pos = std::clamp(curr_pos, 0.0f, 2.0f * pi);
+
+        temperature = min_temp + (curr_pos / 2.0f / pi) * (max_temp - min_temp);
+
+        if (temperature > max_f)
+        {
+            max_f = temperature;
+            std::cout << "new max: " << max_f << '\n';
+        }
+        if (temperature < min_f)
+        {
+            min_f = temperature;
+            std::cout << "new min: " << min_f << '\n';
+        }
+
+        std::cout << "curr_temp: " << temperature << ", delta: " << delta << '\n';
     }
 
 
