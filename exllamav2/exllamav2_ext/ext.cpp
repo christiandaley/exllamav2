@@ -5,6 +5,7 @@
 #include <cuda_fp16.h>
 #include <cstdint>
 #include <cstdio>
+#include <iostream>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
@@ -943,6 +944,14 @@ std::vector<float> sample_basic
     float* logits_ptr = (float*) logits.data_ptr();
 
     bool* logits_filter_ptr = (bool*) logit_filter.data_ptr();
+
+    const bool qtemp = true;
+
+    if (qtemp)
+    {
+        std::cout << "qtemp!!!\n";
+    }
+
 
     if (temperature < 0.01)
     {
